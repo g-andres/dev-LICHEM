@@ -152,7 +152,7 @@ double GaussianEnergyMPIRead(vector<QMMMAtom>& QMMMData,
                       QMMMSettings& QMMMOpts, int bead);
 
                       
-void WriteTINKERxyz(vector<QMMMAtom>& QMMMData,stringstream& call,int bead);
+
 
 void TINKERForcesMPIWrite(vector<QMMMAtom>& QMMMData,
                     QMMMSettings& QMMMOpts, int bead,int&,fstream&);
