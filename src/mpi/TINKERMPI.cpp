@@ -61,7 +61,6 @@ void WriteTINKERxyz(vector<QMMMAtom>& QMMMData,stringstream& call,int bead)
     outFile << "90.0 90.0 90.0";
     outFile << '\n';
   }
-  ct = 0; //Counter for QM atoms
   for (int i=0;i<Natoms;i++)
   {
     outFile << setw(6) << (QMMMData[i].id+1);
@@ -80,7 +79,7 @@ void WriteTINKERxyz(vector<QMMMAtom>& QMMMData,stringstream& call,int bead)
       outFile << " "; //Avoids trailing spaces
       outFile << setw(6) << (QMMMData[i].bonds[j]+1);
     }
-    ofile.copyfmt(cout); /*Copy settings from cout*/
+    outFile.copyfmt(cout); /*Copy settings from cout*/
     outFile << '\n';
   }
   outFile.flush();

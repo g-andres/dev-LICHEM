@@ -210,6 +210,8 @@ void SplitPathTraj(int&,char**&);
 
 void TINK2LICHEM(int&,char**&);
 
+void WriteTINKERxyz(vector<QMMMAtom>&,stringstream&,int);
+
 double TINKEREnergy(vector<QMMMAtom>&,QMMMSettings&,int,fstream&);
 
 double TINKERForces(vector<QMMMAtom>&,VectorXd&,QMMMSettings&,int);

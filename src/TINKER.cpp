@@ -2008,3 +2008,44 @@ double TINKEROpt(vector<QMMMAtom>& QMMMData, QMMMSettings& QMMMOpts, int bead,
   return E;
 };
 
+void WriteTINKERxyz(vector<QMMMAtom>& QMMMData,stringstream& call,int bead)
+{
+  fstream outFile;
+  outFile.open(call.str().c_str(),ios_base::out);
+  //Write atoms to the xyz file
+  outFile << Natoms << '\n';
+  if (PBCon)
+  {
+    //Write box size
+    outFile << LICHEMFormFloat(Lx,12) << " ";
+    outFile << LICHEMFormFloat(Ly,12) << " ";
+    outFile << LICHEMFormFloat(Lz,12) << " ";
+    outFile << "90.0 90.0 90.0";
+    outFile << '\n';
+  }
+  for (int i=0;i<Natoms;i++)
+  {
+    outFile << setw(6) << (QMMMData[i].id+1);
+    outFile << " ";
+    outFile << setw(3) << QMMMData[i].MMTyp;
+    outFile << " ";
+    outFile << LICHEMFormFloat(QMMMData[i].P[bead].x,12);
+    outFile << " ";
+    outFile << LICHEMFormFloat(QMMMData[i].P[bead].y,12);
+    outFile << " ";
+    outFile << LICHEMFormFloat(QMMMData[i].P[bead].z,12);
+    outFile << " ";
+    outFile << setw(4) << QMMMData[i].numTyp;
+    for (unsigned int j=0;j<QMMMData[i].bonds.size();j++)
+    {
+      outFile << " "; //Avoids trailing spaces
+      outFile << setw(6) << (QMMMData[i].bonds[j]+1);
+    }
+    outFile.copyfmt(cout); /*Copy settings from cout*/
+    outFile << '\n';
+  }
+  outFile.flush();
+  outFile.close();
+  return;
+}
+// End: Mark A. Hix - End of WriteTINKERxyz function
