@@ -114,43 +114,12 @@ void TINKERInduced(vector<QMMMAtom>& QMMMData, QMMMSettings& QMMMOpts,
   call.copyfmt(cout); //Copy settings from cout
   string dummy; //Generic string
   int ct; //Generic counter
+
   //Create TINKER xyz file
   call.str("");
   call << "LICHM_" << bead << ".xyz";
-  outFile.open(call.str().c_str(),ios_base::out);
-  outFile << Natoms << '\n';
-  if (PBCon)
-  {
-    //Write box size
-    outFile << LICHEMFormFloat(Lx,12) << " ";
-    outFile << LICHEMFormFloat(Ly,12) << " ";
-    outFile << LICHEMFormFloat(Lz,12) << " ";
-    outFile << "90.0 90.0 90.0";
-    outFile << '\n';
-  }
-  ct = 0; //Counter for QM atoms
-  for (int i=0;i<Natoms;i++)
-  {
-    outFile << setw(6) << (QMMMData[i].id+1);
-    outFile << " ";
-    outFile << setw(3) << QMMMData[i].MMTyp;
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].x,16);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].y,16);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].z,16);
-    outFile << " ";
-    outFile << setw(4) << QMMMData[i].numTyp;
-    for (unsigned int j=0;j<QMMMData[i].bonds.size();j++)
-    {
-      outFile << " "; //Avoids trailing spaces
-      outFile << setw(6) << (QMMMData[i].bonds[j]+1);
-    }
-    outFile << '\n';
-  }
-  outFile.flush();
-  outFile.close();
+  WriteTINKERxyz(QMMMData, call, bead);
+
   //Create new TINKER key file
   call.str("");
   call << "cp tinker.key LICHM_";
@@ -335,43 +304,12 @@ double TINKERPolEnergy(vector<QMMMAtom>& QMMMData, QMMMSettings& QMMMOpts,
   double ESolv = 0; //Solvation energy
   double E = 0; //Total energy for error checking
   int ct; //Generic counter
+
   //Create TINKER xyz file
   call.str("");
   call << "LICHM_" << bead << ".xyz";
-  outFile.open(call.str().c_str(),ios_base::out);
-  outFile << Natoms << '\n';
-  if (PBCon)
-  {
-    //Write box size
-    outFile << LICHEMFormFloat(Lx,12) << " ";
-    outFile << LICHEMFormFloat(Ly,12) << " ";
-    outFile << LICHEMFormFloat(Lz,12) << " ";
-    outFile << "90.0 90.0 90.0";
-    outFile << '\n';
-  }
-  ct = 0; //Counter for QM atoms
-  for (int i=0;i<Natoms;i++)
-  {
-    outFile << setw(6) << (QMMMData[i].id+1);
-    outFile << " ";
-    outFile << setw(3) << QMMMData[i].MMTyp;
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].x,16);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].y,16);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].z,16);
-    outFile << " ";
-    outFile << setw(4) << QMMMData[i].numTyp;
-    for (unsigned int j=0;j<QMMMData[i].bonds.size();j++)
-    {
-      outFile << " "; //Avoids trailing spaces
-      outFile << setw(6) << (QMMMData[i].bonds[j]+1);
-    }
-    outFile << '\n';
-  }
-  outFile.flush();
-  outFile.close();
+  WriteTINKERxyz(QMMMData, call, bead);
+
   //Create new TINKER key file
   call.str("");
   call << "cp tinker.key LICHM_";
@@ -739,44 +677,12 @@ double TINKERForces(vector<QMMMAtom>& QMMMData, VectorXd& forces,
   }
   outFile.flush();
   outFile.close();
+
   //Create TINKER xyz file from the structure
   call.str("");
   call << "LICHM_" << bead << ".xyz";
-  outFile.open(call.str().c_str(),ios_base::out);
-  //Write atoms to the xyz file
-  outFile << Natoms << '\n';
-  if (PBCon)
-  {
-    //Write box size
-    outFile << LICHEMFormFloat(Lx,12) << " ";
-    outFile << LICHEMFormFloat(Ly,12) << " ";
-    outFile << LICHEMFormFloat(Lz,12) << " ";
-    outFile << "90.0 90.0 90.0";
-    outFile << '\n';
-  }
-  ct = 0; //Counter for QM atoms
-  for (int i=0;i<Natoms;i++)
-  {
-    outFile << setw(6) << (QMMMData[i].id+1);
-    outFile << " ";
-    outFile << setw(3) << QMMMData[i].MMTyp;
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].x,12);//replaced 16 with 12
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].y,12);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].z,12);
-    outFile << " ";
-    outFile << setw(4) << QMMMData[i].numTyp;
-    for (unsigned int j=0;j<QMMMData[i].bonds.size();j++)
-    {
-      outFile << " "; //Avoids trailing spaces
-      outFile << setw(6) << (QMMMData[i].bonds[j]+1);
-    }
-    outFile << '\n';
-  }
-  outFile.flush();
-  outFile.close();
+  WriteTINKERxyz(QMMMData, call, bead);
+
   //Run MM
   call.str("");
   call << "testgrad ";
@@ -1010,43 +916,12 @@ double TINKERMMForces(vector<QMMMAtom>& QMMMData, VectorXd& forces,
   }
   outFile.flush();
   outFile.close();
+
   //Create TINKER xyz file from the structure
   call.str("");
   call << "LICHM_" << bead << ".xyz";
-  outFile.open(call.str().c_str(),ios_base::out);
-  //Write atoms to the xyz file
-  outFile << Natoms << '\n';
-  if (PBCon)
-  {
-    //Write box size
-    outFile << LICHEMFormFloat(Lx,12) << " ";
-    outFile << LICHEMFormFloat(Ly,12) << " ";
-    outFile << LICHEMFormFloat(Lz,12) << " ";
-    outFile << "90.0 90.0 90.0";
-    outFile << '\n';
-  }
-  for (int i=0;i<Natoms;i++)
-  {
-    outFile << setw(6) << (QMMMData[i].id+1);
-    outFile << " ";
-    outFile << setw(3) << QMMMData[i].MMTyp;
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].x,16);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].y,16);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].z,16);
-    outFile << " ";
-    outFile << setw(4) << QMMMData[i].numTyp;
-    for (unsigned int j=0;j<QMMMData[i].bonds.size();j++)
-    {
-      outFile << " "; //Avoids trailing spaces
-      outFile << setw(6) << (QMMMData[i].bonds[j]+1);
-    }
-    outFile << '\n';
-  }
-  outFile.flush();
-  outFile.close();
+  WriteTINKERxyz(QMMMData, call, bead);
+
   //Run MM
   call.str("");
   call << "testgrad ";
@@ -1284,44 +1159,12 @@ double TINKERPolForces(vector<QMMMAtom>& QMMMData, VectorXd& forces,
   }
   outFile.flush();
   outFile.close();
+  
   //Create TINKER xyz file from the structure
   call.str("");
   call << "LICHM_" << bead << ".xyz";
-  outFile.open(call.str().c_str(),ios_base::out);
-  //Write atoms to the xyz file
-  outFile << Natoms << '\n';
-  if (PBCon)
-  {
-    //Write box size
-    outFile << LICHEMFormFloat(Lx,12) << " ";
-    outFile << LICHEMFormFloat(Ly,12) << " ";
-    outFile << LICHEMFormFloat(Lz,12) << " ";
-    outFile << "90.0 90.0 90.0";
-    outFile << '\n';
-  }
-  ct = 0; //Counter for QM atoms
-  for (int i=0;i<Natoms;i++)
-  {
-    outFile << setw(6) << (QMMMData[i].id+1);
-    outFile << " ";
-    outFile << setw(3) << QMMMData[i].MMTyp;
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].x,12);//replaced 16 with 12
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].y,12);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].z,12);
-    outFile << " ";
-    outFile << setw(4) << QMMMData[i].numTyp;
-    for (unsigned int j=0;j<QMMMData[i].bonds.size();j++)
-    {
-      outFile << " "; //Avoids trailing spaces
-      outFile << setw(6) << (QMMMData[i].bonds[j]+1);
-    }
-    outFile << '\n';
-  }
-  outFile.flush();
-  outFile.close();
+  WriteTINKERxyz(QMMMData, call, bead);
+
   //Run MM
   call.str("");
   call << "testgrad ";
@@ -1550,44 +1393,12 @@ double TINKEREnergy(vector<QMMMAtom>& QMMMData, QMMMSettings& QMMMOpts,
   }
   outFile.flush();
   outFile.close();
+  
   //Create TINKER xyz file from the structure
   call.str("");
   call << "LICHM_" << bead << ".xyz";
-  outFile.open(call.str().c_str(),ios_base::out);
-  //Write atoms to the xyz file
-  outFile << Natoms << '\n';
-  if (PBCon)
-  {
-    //Write box size
-    outFile << LICHEMFormFloat(Lx,12) << " ";
-    outFile << LICHEMFormFloat(Ly,12) << " ";
-    outFile << LICHEMFormFloat(Lz,12) << " ";
-    outFile << "90.0 90.0 90.0";
-    outFile << '\n';
-  }
-  ct = 0; //Counter for QM atoms
-  for (int i=0;i<Natoms;i++)
-  {
-    outFile << setw(6) << (QMMMData[i].id+1);
-    outFile << " ";
-    outFile << setw(3) << QMMMData[i].MMTyp;
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].x,16);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].y,16);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].z,16);
-    outFile << " ";
-    outFile << setw(4) << QMMMData[i].numTyp;
-    for (unsigned int j=0;j<QMMMData[i].bonds.size();j++)
-    {
-      outFile << " "; //Avoids trailing spaces
-      outFile << setw(6) << (QMMMData[i].bonds[j]+1);
-    }
-    outFile << '\n';
-  }
-  outFile.flush();
-  outFile.close();
+  WriteTINKERxyz(QMMMData, call, bead);
+
   //Calculate MM potential energy
   call.str("");
   call << "analyze LICHM_";
@@ -1816,44 +1627,12 @@ MatrixXd TINKERHessian(vector<QMMMAtom>& QMMMData, QMMMSettings& QMMMOpts,
   }
   outFile.flush();
   outFile.close();
+
   //Create TINKER xyz file from the structure
   call.str("");
   call << "LICHM_" << bead << ".xyz";
-  outFile.open(call.str().c_str(),ios_base::out);
-  //Write atoms to the xyz file
-  outFile << Natoms << '\n';
-  if (PBCon)
-  {
-    //Write box size
-    outFile << LICHEMFormFloat(Lx,12) << " ";
-    outFile << LICHEMFormFloat(Ly,12) << " ";
-    outFile << LICHEMFormFloat(Lz,12) << " ";
-    outFile << "90.0 90.0 90.0";
-    outFile << '\n';
-  }
-  ct = 0; //Counter for QM atoms
-  for (int i=0;i<Natoms;i++)
-  {
-    outFile << setw(6) << (QMMMData[i].id+1);
-    outFile << " ";
-    outFile << setw(3) << QMMMData[i].MMTyp;
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].x,16);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].y,16);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].z,16);
-    outFile << " ";
-    outFile << setw(4) << QMMMData[i].numTyp;
-    for (unsigned int j=0;j<QMMMData[i].bonds.size();j++)
-    {
-      outFile << " "; //Avoids trailing spaces
-      outFile << setw(6) << (QMMMData[i].bonds[j]+1);
-    }
-    outFile << '\n';
-  }
-  outFile.flush();
-  outFile.close();
+  WriteTINKERxyz(QMMMData, call, bead);
+
   //Run MM
   call.str("");
   call << "testhess ";
@@ -2167,47 +1946,12 @@ double TINKEROpt(vector<QMMMAtom>& QMMMData, QMMMSettings& QMMMOpts, int bead,
   }
   outFile.flush();
   outFile.close();
+
   //Create TINKER xyz file from the structure
   call.str("");
   call << "LICHM_" << bead << ".xyz";
-  outFile.open(call.str().c_str(),ios_base::out);
-  //Write atoms to the xyz file
-  outFile << Natoms << '\n';
-  if (PBCon)
-  {
-    //Write box size
-    outFile << LICHEMFormFloat(Lx,12) << " ";
-    outFile << LICHEMFormFloat(Ly,12) << " ";
-    outFile << LICHEMFormFloat(Lz,12) << " ";
-    outFile << "90.0 90.0 90.0";
-    outFile << '\n';
-  }
-  ct = 0; //Counter for QM atoms
-  for (int i=0;i<Natoms;i++)
-  {
-    outFile << setw(6) << (QMMMData[i].id+1);
-    outFile << " ";
-    outFile << setw(3) << QMMMData[i].MMTyp;
-    outFile << " ";
-    //outFile << LICHEMFormFloat(QMMMData[i].P[bead].x,16);
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].x,12);
-    outFile << " ";
-    //outFile << LICHEMFormFloat(QMMMData[i].P[bead].y,16);
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].y,12);
-    outFile << " ";
-    //outFile << LICHEMFormFloat(QMMMData[i].P[bead].z,16);
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].z,12);
-    outFile << " ";
-    outFile << setw(4) << QMMMData[i].numTyp;
-    for (unsigned int j=0;j<QMMMData[i].bonds.size();j++)
-    {
-      outFile << " "; //Avoids trailing spaces
-      outFile << setw(6) << (QMMMData[i].bonds[j]+1);
-    }
-    outFile << '\n';
-  }
-  outFile.flush();
-  outFile.close();
+  WriteTINKERxyz(QMMMData, call, bead);
+
   //Run optimization
   call.str("");
   call << "minimize LICHM_";

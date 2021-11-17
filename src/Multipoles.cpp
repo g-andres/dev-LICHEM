@@ -28,35 +28,12 @@ void ExtractTINKpoles(vector<QMMMAtom>& QMMMData, int bead)
   string dummy; //Generic string
   fstream inFile,outFile; //Generic file streams
   stringstream call; //Stream for system calls and reading/writing files
+
   //Create TINKER xyz file from the structure
   call.str("");
   call << "LICHM_" << bead << ".xyz";
-  outFile.open(call.str().c_str(),ios_base::out);
-  //Write atoms to the xyz file
-  outFile << Natoms << '\n';
-  for (int i=0;i<Natoms;i++)
-  {
-    //Write XYZ data
-    outFile << setw(6) << (QMMMData[i].id+1);
-    outFile << " ";
-    outFile << setw(3) << QMMMData[i].MMTyp;
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].x,16);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].y,16);
-    outFile << " ";
-    outFile << LICHEMFormFloat(QMMMData[i].P[bead].z,16);
-    outFile << " ";
-    outFile << setw(4) << QMMMData[i].numTyp;
-    for (unsigned int j=0;j<QMMMData[i].bonds.size();j++)
-    {
-      outFile << " "; //Avoids trailing spaces
-      outFile << setw(6) << (QMMMData[i].bonds[j]+1);
-    }
-    outFile << '\n';
-  }
-  outFile.flush();
-  outFile.close();
+  WriteTINKERxyz(QMMMData, call, bead);
+
   //Write poledit input
   call.str("");
   call << "LICHM_" << bead << ".txt";
